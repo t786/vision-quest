@@ -19,76 +19,84 @@ class AppointmantController extends Controller
             return view('admin.appointments.index', compact('doctors','appointments'));
 
         } else {
-            if ($request->ajax()) {
-                $data = Appointment::where('patient_id',auth()->user()->id);
-                return Datatables::of($data)
-                    ->addIndexColumn()
-                    ->addColumn('patientName', function(Appointment $data) {
-                        $name = $data->doctor->first_name .' '. $data->doctor->last_name;
-                        return $name;
-
-                    })
-                    ->addColumn('action', function(Appointment $data) {
-                        // Serialize user data to JSON format
-                        $userData = json_encode($data);
-
-                        $btn = '<div class="d-flex align-items-center">
-                                    <a href="javascript:void(0)" class="text-body edit-city"
-                                        data-bs-toggle="offcanvas" data-bs-target="#offcanvasEditCity" data-user=\''.$userData.'\'>
-                                        <i class="ti ti-edit ti-sm me-2"></i>
-                                    </a>
-                                </div>';
-                        return $btn;
-                    })
-                    ->filter(function ($instance) use ($request) {
-                        if (!empty($request->get('search'))) {
-                            $instance->where(function ($query) use ($request) {
-                                $search = $request->get('search');
-                                $query->orWhere('id', 'LIKE', "%$search%")
-                                    ->orWhere('name', 'LIKE', "%$search%");
-                            });
-                        }
-
-                        if (!empty($request->get('name'))) {
-                            $instance->where(function ($query) use ($request) {
-                                $name = $request->get('name');
-                                $query->orWhere('name', 'LIKE', "%$name%");
-                            });
-                        }
-                    })
-                    ->rawColumns(['patientName','action'])
-                    ->make(true);
-            }
-            return view('admin.appointments.index', compact('doctors'));
+            $doctors = User::where('user_type',2)->get();
+            $data = Appointment::where('patient_id',auth()->user()->id);
+        
+            return view('admin.appointments.patients.index', compact('doctors'));
         }
 
-
-
     }
+
+    // public function store(Request $request)
+    // {
+
+    //     $rules = [
+    //         'date' => 'required',
+    //         'doctor_id' => 'required',
+    //     ];
+
+    //     $validate = Validator::validate($request->all(),$rules);
+
+    //     $data = [
+    //         'date' => $request->input('date'),
+    //         'doctor_id' => $request->input('doctor_id'),
+    //         'patient_id' => auth()->user()->id,
+    //     ];
+
+    //     Appointment::create($data);
+
+    //     return response()->json([
+    //         'status' => 1,
+    //         'message' => 'Appointment created successfully',
+    //         'redirect_url' => route('admin.appointment.index'),
+    //     ]);
+    // }
 
     public function store(Request $request)
     {
 
-        $rules = [
-            'date' => 'required',
-            'doctor_id' => 'required',
-        ];
-
-        $validate = Validator::validate($request->all(),$rules);
-
-        $data = [
-            'date' => $request->input('date'),
-            'doctor_id' => $request->input('doctor_id'),
-            'patient_id' => auth()->user()->id,
-        ];
-
-        Appointment::create($data);
-
-        return response()->json([
-            'status' => 1,
-            'message' => 'Appointment created successfully',
-            'redirect_url' => route('admin.appointment.index'),
+        // dd($request->all());
+        // Validate the form input
+        $validatedData = $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'gender' => 'required',
+            'mobile' => 'required',
+            'email' => 'required|email|max:255',
+            'address' => 'required|string|max:500',
+            'appointment_date' => 'required|date',
+            'from' => 'required|date_format:H:i',
+            'to' => 'required|date_format:H:i',
+            'doctor' => 'nullable|string',
+            'treatment' => 'nullable|string|max:255',
+            'certificate' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048', // Max 2MB
         ]);
+
+        // Handle file upload
+        if ($request->hasFile('certificate')) {
+            $validatedData['certificate'] = $request->file('certificate')->store('certificates', 'public');
+        }
+
+        // Save the data to the database (assuming you have a model)
+        $appointment = new \App\Models\Appointment();
+        $appointment->doctor_id = $validatedData['doctor'];
+        $appointment->patient_id = auth()->user()->id;
+        $appointment->first_name = $validatedData['first_name'];
+        $appointment->last_name = $validatedData['last_name'];
+        $appointment->gender = $validatedData['gender'];
+        $appointment->mobile = $validatedData['mobile'];
+        $appointment->email = $validatedData['email'];
+        $appointment->address = $validatedData['address'];
+        $appointment->date = $validatedData['appointment_date'];
+        $appointment->from = $validatedData['from'];
+        $appointment->to = $validatedData['to'];
+        $appointment->doctor = $validatedData['doctor'] ?? null;
+        $appointment->treatment = $validatedData['treatment'] ?? null;
+        $appointment->certificate = $validatedData['certificate'] ?? null;
+        $appointment->save();
+
+        // Redirect with a success message
+        return redirect()->back()->with('success', 'Appointment has been successfully created.');
     }
 
 
