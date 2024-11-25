@@ -1,209 +1,73 @@
 @extends('layouts.master')
 <style>
-    .user-btn {
-        display: flex;
-        justify-content: flex-end;
+    .patient-card {
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      padding: 15px;
+      background-color: #fff;
     }
-    .user-btn .add-new {
-        margin-right: 10px;
+    .patient-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .btn-icon {
+      border-radius: 50%;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      width: 35px;
+      height: 35px;
+      border: 1px solid #ddd;
+    }
+    .btn-main {
+      background-color: #20c997;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 25px;
     }
 </style>
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="row g-4 mb-4">
-            <div class="col-sm-6 col-xl-3">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex align-items-start justify-content-between">
-                            <div class="content-left">
-                                <span>Session</span>
-                                <div class="d-flex align-items-center my-2">
-                                    <h3 class="mb-0 me-2">21,459</h3>
-                                    <p class="text-success mb-0">(+29%)</p>
-                                </div>
-                                <p class="mb-0">Total Users</p>
-                            </div>
-                            <div class="avatar">
-                                <span class="avatar-initial rounded bg-label-primary">
-                                    <i class="ti ti-user ti-sm"></i>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-xl-3">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex align-items-start justify-content-between">
-                            <div class="content-left">
-                                <span>Paid Users</span>
-                                <div class="d-flex align-items-center my-2">
-                                    <h3 class="mb-0 me-2">4,567</h3>
-                                    <p class="text-success mb-0">(+18%)</p>
-                                </div>
-                                <p class="mb-0">Last week analytics</p>
-                            </div>
-                            <div class="avatar">
-                                <span class="avatar-initial rounded bg-label-danger">
-                                    <i class="ti ti-user-plus ti-sm"></i>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-xl-3">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex align-items-start justify-content-between">
-                            <div class="content-left">
-                                <span>Active Users</span>
-                                <div class="d-flex align-items-center my-2">
-                                    <h3 class="mb-0 me-2">19,860</h3>
-                                    <p class="text-danger mb-0">(-14%)</p>
-                                </div>
-                                <p class="mb-0">Last week analytics</p>
-                            </div>
-                            <div class="avatar">
-                                <span class="avatar-initial rounded bg-label-success">
-                                    <i class="ti ti-user-check ti-sm"></i>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-xl-3">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex align-items-start justify-content-between">
-                            <div class="content-left">
-                                <span>Pending Users</span>
-                                <div class="d-flex align-items-center my-2">
-                                    <h3 class="mb-0 me-2">237</h3>
-                                    <p class="text-success mb-0">(+42%)</p>
-                                </div>
-                                <p class="mb-0">Last week analytics</p>
-                            </div>
-                            <div class="avatar">
-                                <span class="avatar-initial rounded bg-label-warning">
-                                    <i class="ti ti-user-exclamation ti-sm"></i>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <h5 class="fw-bold mb-3">Patients ({{ $appointments->count() }})</h5>
         </div>
         <!-- Subscriptions List Table -->
-        <div class="card">
-            <div class="card-header border-bottom">
-                <div class="col-md-12">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h5 class="card-title mb-3">Appointment List</h5>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="user-btn">
-                            {{-- <button class="add-new btn btn-primary waves-effect waves-light" data-bs-toggle = 'offcanvas'
-                                data-bs-target = '#offcanvasUserFilters'>
-                                <i class="ti ti-filter"></i><span class="d-none d-sm-inline-block">Filters</span>
-                            </button> --}}
-                            @if(auth()->user()->user_type == '1')
-                            <button class="add-new btn btn-primary waves-effect waves-light" data-bs-toggle = 'offcanvas'
-                                data-bs-target = '#offcanvasAddCast' style="float: right">
-                                <i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">Add New Appointment</span>
-                            </button>
-                            @endif
-                            </div>
-                        </div>
-                    </div>
-
+        @foreach ($appointments as $appointment)
+            <div class="patient-card d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                <img src="" alt="Patient Avatar" class="patient-avatar me-3">
+                <div>
+                    <h6 class="mb-0"></h6>
+                    <small class="text-muted">30 years</small>
+                </div>
+                </div>
+                <div class="d-flex align-items-center">
+                <button class="btn-main me-3">Main Button</button>
+                <button class="btn-icon me-2">
+                    <i class="bi bi-arrow-repeat"></i>
+                </button>
+                <button class="btn-icon">
+                    <i class="bi bi-link-45deg"></i>
+                </button>
                 </div>
             </div>
-            <div class="card-datatable table-responsive">
+        @endforeach
 
-                <table class="datatables-users table" id="cast_table">
-                    <thead class="border-top">
-                        <tr>
-                            <th></th>
-                            <th>Name</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                </table>
-            </div>
-            @include('admin.appointments.CreateOrEditModel.create')
-            @include('admin.appointments.CreateOrEditModel.edit') 
-            @include('admin.appointments.CreateOrEditModel.filters')
-        </div>
+
+
+
+
+
+
+        @include('admin.appointments.CreateOrEditModel.create')
+        @include('admin.appointments.CreateOrEditModel.edit')
+        @include('admin.appointments.CreateOrEditModel.filters')
+
     </div>
 @endsection
 @section('script')
-    <script>
-        var table;
-        $(document).ready(function() {
-
-            table = $('#cast_table').DataTable({
-                responsive: true,
-                processing: true,
-                serverSide: true,
-                ajax: {
-                    url: "{{ route('admin.appointment.index') }}",
-                    data: function(d) {
-                        d.search = $('input[type="search"]').val(),
-                        d.name = $('#name').val(),
-                        d.status = $('#status').val()
-                    }
-                },
-                order: [
-                    [0, "desc"]
-                ],
-                columns: [{
-                        data: 'id',
-                        name: 'id'
-                    },
-                    {
-                        data: 'patientName',
-                        name: 'patientName'
-                    },
-                    {
-                        data: 'action',
-                        name: 'action',
-                        orderable: false,
-                        searchable: false
-                    },
-                ],
-                drawCallback: function(response) {
-
-                    $('#countTotal').empty();
-                    $('#countTotal').append(response['json'].recordsTotal);
-                }
-            });
-
-            $('input[type="search"],#delivery_status,#platform,#date_type,#custom_date_range_input,#custom_date_input')
-                .change(function() {
-                    table.draw();
-                });
-        });
-
-        $('#selectDataBtn').click(function() {
-            var name = $('#name').val();
-            var status = $('#status').val();
-
-            // Example of constructing the URL with query parameters
-            var url = "{{ route('admin.appointment.index') }}";
-            url += "?name=" + name;
-            url += "&status=" + status;
-
-            // Reload DataTable with new URL
-            $('#cast_table').DataTable().ajax.url(url).load();
-
-            // Close the modal after updating DataTable
-            $('#offcanvasUserFilters').removeClass('show');
-            $('.offcanvas-backdrop').removeClass('show');
-        });
-    </script>
 @endsection

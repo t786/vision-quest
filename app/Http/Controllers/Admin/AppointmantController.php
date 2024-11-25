@@ -15,48 +15,8 @@ class AppointmantController extends Controller
     {
         $doctors = User::where('user_type',2)->get();
         if(auth()->user()->user_type == '2'){
-            if ($request->ajax()) {
-                $data = Appointment::where('doctor_id',auth()->user()->id);
-                return Datatables::of($data)
-                    ->addIndexColumn()
-                    ->addColumn('patientName', function(Appointment $data) {
-                        $name = $data->patient->first_name .' '. $data->patient->last_name;
-                        return $name;
-                        
-                    })
-                    ->addColumn('action', function(Appointment $data) {
-                        // Serialize user data to JSON format
-                        $userData = json_encode($data);
-                        
-                        $btn = '<div class="d-flex align-items-center">
-                                    <a href="javascript:void(0)" class="text-body edit-city"
-                                        data-bs-toggle="offcanvas" data-bs-target="#offcanvasEditCity" data-user=\''.$userData.'\'>
-                                        <i class="ti ti-edit ti-sm me-2"></i>
-                                    </a>
-                                </div>';
-                        return $btn;
-                    })
-                    ->filter(function ($instance) use ($request) {
-                        if (!empty($request->get('search'))) {
-                            $instance->where(function ($query) use ($request) {
-                                $search = $request->get('search');
-                                $query->orWhere('id', 'LIKE', "%$search%")
-                                    ->orWhere('name', 'LIKE', "%$search%");
-                            });
-                        }
-
-                        if (!empty($request->get('name'))) {
-                            $instance->where(function ($query) use ($request) {
-                                $name = $request->get('name');
-                                $query->orWhere('name', 'LIKE', "%$name%");
-                            });
-                        }
-                    })
-                    ->rawColumns(['patientName','action'])
-                    ->make(true);
-            }
-
-            return view('admin.appointments.index', compact('doctors'));
+            $appointments = Appointment::where('doctor_id',auth()->user()->id);
+            return view('admin.appointments.index', compact('doctors','appointments'));
 
         } else {
             if ($request->ajax()) {
@@ -66,12 +26,12 @@ class AppointmantController extends Controller
                     ->addColumn('patientName', function(Appointment $data) {
                         $name = $data->doctor->first_name .' '. $data->doctor->last_name;
                         return $name;
-                        
+
                     })
                     ->addColumn('action', function(Appointment $data) {
                         // Serialize user data to JSON format
                         $userData = json_encode($data);
-                        
+
                         $btn = '<div class="d-flex align-items-center">
                                     <a href="javascript:void(0)" class="text-body edit-city"
                                         data-bs-toggle="offcanvas" data-bs-target="#offcanvasEditCity" data-user=\''.$userData.'\'>
@@ -101,9 +61,9 @@ class AppointmantController extends Controller
             }
             return view('admin.appointments.index', compact('doctors'));
         }
-        
 
-        
+
+
     }
 
     public function store(Request $request)
