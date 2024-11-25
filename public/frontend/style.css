@@ -1,0 +1,43 @@
+.doctor-card {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+}
+.doctor-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.doctor-info {
+    margin-left: 20px;
+    flex-grow: 1;
+}
+.doctor-info h5 {
+    margin: 0;
+    font-weight: bold;
+}
+.doctor-info .reviews {
+    font-size: 14px;
+    color: #888;
+}
+.doctor-actions {
+    text-align: right;
+}
+.book-btn {
+    background-color: #6f42c1;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+.book-btn:hover {
+    background-color: #5a33a3;
+    color: white;
+}

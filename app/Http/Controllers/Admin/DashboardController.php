@@ -19,6 +19,5 @@ class DashboardController extends Controller
             return view('admin.dashboard.patient-dashboard', compact('doctors'));
         }
 
-
     }
 }
