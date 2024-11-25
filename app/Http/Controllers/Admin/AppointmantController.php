@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Appointment;
 use App\Models\User;
+use App\Models\Appointment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Yajra\DataTables\DataTables;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -13,10 +14,19 @@ class AppointmantController extends Controller
 {
     public function index(Request $request)
     {
-        $doctors = User::where('user_type',2)->get();
         if(auth()->user()->user_type == '2'){
-            $appointments = Appointment::where('doctor_id',auth()->user()->id);
-            return view('admin.appointments.index', compact('doctors','appointments'));
+            $upComingAppointments = Appointment::where('doctor_id', auth()->user()->id)
+                ->whereDate('date', '>=', Carbon::now()->toDateString())->get();
+
+            $previousAppointments = Appointment::where('doctor_id', auth()->user()->id)
+                ->whereBetween('date', [
+                    Carbon::now()->subMonth()->startOfMonth()->toDateString(), // Start of previous month
+                    Carbon::now()->subMonth()->endOfMonth()->toDateString(),   // End of previous month
+                ])
+                ->get();
+
+
+            return view('admin.appointments.index', compact('upComingAppointments','previousAppointments'));
 
         } else {
             if ($request->ajax()) {
