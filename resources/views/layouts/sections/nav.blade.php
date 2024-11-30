@@ -292,7 +292,7 @@
                                 <div class="flex-grow-1">
                                     <span class="fw-medium d-block">{{ auth()->user()->first_name }} {{ auth()->user()->last_name }}</span>
                                     <small class="text-muted">
-                                        @if (auth()->user()->user_type == '1') 
+                                        @if (auth()->user()->user_type == '1')
                                             Patient
                                         @else
                                             Doctor
@@ -305,6 +305,13 @@
                     <li>
                         <div class="dropdown-divider"></div>
                     </li>
+                    <li>
+                        <a  href="{{ route('admin.dashboard.editProfile') }}" class="dropdown-item">
+                            <i class="ti ti-edit me-2 ti-sm"></i>
+                            <span class="align-middle">Edit Profile</span>
+                        </a>
+                    </li>
+
                     <li>
                         <div class="dropdown-divider"></div>
                     </li>

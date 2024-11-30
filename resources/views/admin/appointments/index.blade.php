@@ -11,9 +11,8 @@
     }
 
     .chat-avatar {
-        width: 40px;
-        height: 40px;
-        background-color: #ccc;
+        width: 100px;
+        height: 100px;
         margin-right: 10px;
     }
 
@@ -58,13 +57,13 @@
     }
 
     .btn-icon {
-      border-radius: 50%;
-      display: inline-flex;
-      justify-content: center;
-      align-items: center;
-      width: 35px;
-      height: 35px;
-      border: 1px solid #ddd;
+        border-radius: 50%;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        width: 35px;
+        height: 35px;
+        border: 1px solid #ddd;
     }
 </style>
 
@@ -75,15 +74,20 @@
             <div class="col-lg-6">
                 <div class="card" style="padding: 15px;">
                     <h5 class="fw-bold mb-3">Upcoming appointments</h5>
-                    <a href="#" class="mb-3 d-inline-block">November-December</a>
-                    @if($upComingAppointments->isNotEmpty())
+                    <a href="#" class="mb-3 d-inline-block">
+                        {{ \Carbon\Carbon::now()->format('F') }}-{{ \Carbon\Carbon::now()->addMonth()->format('F') }}
+                    </a>
+                    @if ($upComingAppointments->isNotEmpty())
                         @foreach ($upComingAppointments as $upComingAppointment)
                             <div class="chat-card">
-                                <div class="chat-avatar"></div>
+                                <img class="chat-avatar" src="{{ asset('storage/' . $upComingAppointment->patient->image_url) }}" alt="Dr. Ali Anjum" class="doctor-image">
                                 <div class="chat-info">
                                     <!-- Patient's Full Name -->
                                     <h6 class="mb-0">
-                                        {{ $upComingAppointment->patient->first_name . ' ' . $upComingAppointment->patient->last_name }}
+                                        <a href="{{ route('admin.appointment.prescription') }}"
+                                            class="text-primary">
+                                            {{ $upComingAppointment->patient->first_name . ' ' . $upComingAppointment->patient->last_name }}
+                                        </a>
                                     </h6>
                                     <!-- Formatted Appointment Date -->
                                     <small class="chat-time">
@@ -91,14 +95,37 @@
                                     </small>
                                 </div>
                                 <div>
-                                    <!-- Phone Button -->
-                                    <button class="btn-icon">
+                                    <!-- Phone Button with Modal Trigger -->
+                                    <button class="btn-icon" data-bs-toggle="modal"
+                                        data-bs-target="#phoneModal{{ $upComingAppointment->id }}">
                                         <i class="ti ti-phone"></i>
                                     </button>
                                     <!-- Appointment Time -->
                                     <small class="d-block text-muted" style="margin-top: 15px;">
-                                        {{ \Carbon\Carbon::parse($upComingAppointment->date)->format('h:i A') }}
+                                        {{ \Carbon\Carbon::parse($upComingAppointment->from)->format('h:i A') }}
                                     </small>
+                                </div>
+
+                                <!-- Modal for Phone Number -->
+                                <div class="modal fade" id="phoneModal{{ $upComingAppointment->id }}" tabindex="-1"
+                                    aria-labelledby="phoneModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="phoneModalLabel">Phone Number</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <!-- Display Patient's Phone Number -->
+                                                <p>Phone Number: {{ $upComingAppointment->patient->phone_number }}</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         @endforeach
@@ -110,28 +137,57 @@
             <!-- Past Appointments -->
             <div class="col-lg-6">
                 <h5 class="fw-bold mb-3">Past appointments</h5>
-                <a href="#" class="mb-3 d-inline-block">October-November</a>
+                <a href="#" class="mb-3 d-inline-block">
+                    {{ \Carbon\Carbon::now()->subMonth()->format('F') }}-{{ \Carbon\Carbon::now()->format('F') }}
+                </a>
                 <div>
-                    @if($previousAppointments->isNotEmpty())
+                    @if ($previousAppointments->isNotEmpty())
                         @foreach ($previousAppointments as $previousAppointment)
                             <div class="past-appointment d-flex align-items-center mb-3 p-2 border rounded">
                                 <!-- Avatar -->
-                                <img src="https://via.placeholder.com/45" alt="Avatar" class="avatar rounded-circle me-3">
-
+                                <img src="{{ asset('storage/' . $previousAppointment->patient->image_url) }}" class="avatar rounded-circle me-3" alt="Dr. Ali Anjum" class="doctor-image">
                                 <!-- Appointment Details -->
                                 <div class="details flex-grow-1">
                                     <!-- Patient's Full Name -->
-                                    <h6 class="mb-0">{{ $previousAppointment->patient->first_name . ' ' . $previousAppointment->patient->last_name }}</h6>
+                                    <h6 class="mb-0">
+                                        <a href=""
+                                            class="text-primary">
+                                            {{ $previousAppointment->patient->first_name . ' ' . $previousAppointment->patient->last_name }}
+                                        </a>
+                                    </h6>
                                     <!-- Appointment Month -->
                                     <small class="text-muted">
                                         {{ \Carbon\Carbon::parse($previousAppointment->date)->format('F Y') }}
                                     </small>
                                 </div>
 
-                                <!-- Appointment Time Button -->
-                                <button class="btn btn-sm btn-light time-btn text-primary">
-                                    {{ \Carbon\Carbon::parse($previousAppointment->date)->format('h:i A l') }}
+                                <!-- Phone Button with Modal Trigger -->
+                                <button class="btn-icon" data-bs-toggle="modal"
+                                    data-bs-target="#phoneModal{{ $previousAppointment->id }}">
+                                    <i class="ti ti-phone"></i>
                                 </button>
+                            </div>
+
+                            <!-- Modal for Phone Number -->
+                            <div class="modal fade" id="phoneModal{{ $previousAppointment->id }}" tabindex="-1"
+                                aria-labelledby="phoneModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="phoneModalLabel">Phone Number</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <!-- Display Patient's Phone Number -->
+                                            <p>Phone Number: {{ $previousAppointment->patient->phone_number }}</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         @endforeach
                     @else

@@ -29,55 +29,75 @@ class AppointmantController extends Controller
             return view('admin.appointments.index', compact('upComingAppointments','previousAppointments'));
 
         } else {
-            $doctors = User::where('user_type',2)->get();
-            $data = Appointment::where('patient_id',auth()->user()->id);
-        
-            return view('admin.appointments.patients.index', compact('doctors'));
+            if ($request->ajax()) {
+                // Eager load the 'doctor' relationship to avoid N+1 queries
+                $data = Appointment::with('doctor')->where('patient_id', auth()->user()->id);
+
+                return Datatables::of($data)
+                    ->addIndexColumn()
+                    ->addColumn('patientName', function(Appointment $data) {
+                        // Use the doctor's first and last name from the eager-loaded relationship
+                        $name = $data->doctor->first_name .' '. $data->doctor->last_name;
+                        return $name;
+                    })
+                    ->addColumn('action', function(Appointment $data) {
+                        // Serialize user data to JSON format
+                        $userData = json_encode($data);
+
+                        // Add action button (Edit)
+                        $btn = '<div class="d-flex align-items-center">
+                                    <a href="javascript:void(0)" class="text-body edit-city"
+                                        data-bs-toggle="offcanvas" data-bs-target="#offcanvasEditCity" data-user=\''.$userData.'\' >
+                                        <i class="ti ti-edit ti-sm me-2"></i>
+                                    </a>
+                                </div>';
+                        return $btn;
+                    })
+                    ->filter(function ($instance) use ($request) {
+                        if (!empty($request->get('search'))) {
+                            $instance->where(function ($query) use ($request) {
+                                $search = $request->get('search');
+                                $query->orWhere('id', 'LIKE', "%$search%")
+                                      ->orWhere('name', 'LIKE', "%$search%"); // Consider adjusting 'name' if needed
+                            });
+                        }
+
+                        if (!empty($request->get('name'))) {
+                            $instance->where(function ($query) use ($request) {
+                                $name = $request->get('name');
+                                $query->orWhere('name', 'LIKE', "%$name%"); // Again, make sure 'name' exists in your model
+                            });
+                        }
+                    })
+                    ->rawColumns(['patientName','action'])
+                    ->make(true);
+            }
+
+
+            return view('admin.appointments.patients.index');
         }
 
     }
 
-    // public function store(Request $request)
-    // {
-
-    //     $rules = [
-    //         'date' => 'required',
-    //         'doctor_id' => 'required',
-    //     ];
-
-    //     $validate = Validator::validate($request->all(),$rules);
-
-    //     $data = [
-    //         'date' => $request->input('date'),
-    //         'doctor_id' => $request->input('doctor_id'),
-    //         'patient_id' => auth()->user()->id,
-    //     ];
-
-    //     Appointment::create($data);
-
-    //     return response()->json([
-    //         'status' => 1,
-    //         'message' => 'Appointment created successfully',
-    //         'redirect_url' => route('admin.appointment.index'),
-    //     ]);
-    // }
+    public function create()
+    {
+        $doctors = User::where('user_type',2)->get();
+        return view('admin.appointments.patients.create', compact('doctors'));
+    }
 
     public function store(Request $request)
     {
-
-        // dd($request->all());
-        // Validate the form input
         $validatedData = $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'gender' => 'required',
             'mobile' => 'required',
+            'doctor' => 'required',
             'email' => 'required|email|max:255',
             'address' => 'required|string|max:500',
             'appointment_date' => 'required|date',
             'from' => 'required|date_format:H:i',
             'to' => 'required|date_format:H:i',
-            'doctor' => 'nullable|string',
             'treatment' => 'nullable|string|max:255',
             'certificate' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048', // Max 2MB
         ]);
@@ -100,46 +120,16 @@ class AppointmantController extends Controller
         $appointment->date = $validatedData['appointment_date'];
         $appointment->from = $validatedData['from'];
         $appointment->to = $validatedData['to'];
-        $appointment->doctor = $validatedData['doctor'] ?? null;
         $appointment->treatment = $validatedData['treatment'] ?? null;
         $appointment->certificate = $validatedData['certificate'] ?? null;
         $appointment->save();
 
-        // Redirect with a success message
-        return redirect()->back()->with('success', 'Appointment has been successfully created.');
+
+        return redirect()->route('admin.appointment.index')->with('success', 'Appointment completed successfully!');
     }
 
-
-    public function update(Request $request, string $id)
+    public function prescription(Request $request)
     {
-        $city = City::find($id);
-        if($city == null){
-            return response()->json([
-                'status' => 2,
-                'message' => 'Record not found',
-            ]);
-        }
-
-        $rules = [
-            'name' => 'required|string|max:255',
-            'country_id' => 'required',
-            'status' => 'required',
-        ];
-
-        $validate = Validator::validate($request->all(),$rules);
-
-        $data = [
-            'name' => $request->input('name'),
-            'country_id' => $request->input('country_id'),
-            'status' => $request->input('status')
-        ];
-
-        $city->update($data);
-
-        return response()->json([
-            'status' => 1,
-            'message' => 'city updated successfully',
-            'redirect_url' => route('admin.cities.index'),
-        ]);
+        return view('admin.appointments.prescription');
     }
 }

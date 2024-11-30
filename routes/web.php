@@ -32,13 +32,16 @@ Route::group(['middleware' => 'XSS'], function () {
     Route::group(['middleware' => 'auth'], function () {
         Route::group(['prefix' => 'admin','as' => 'admin.'],function (){
             Route::group(['prefix' => 'dashboard','as' => 'dashboard.'],function(){
-                Route::any('/list',[DashboardController::class,'index'])->name('index');
+                Route::any('/',[DashboardController::class,'index'])->name('index');
+                Route::any('/edit/profile',[DashboardController::class,'editProfile'])->name('editProfile');
+                Route::post('/update/profile',[DashboardController::class,'updateProfile'])->name('updateProfile');
             });
 
             Route::group(['prefix' => 'appointment','as' => 'appointment.'],function(){
                 Route::any('/list',[AppointmantController::class,'index'])->name('index');
+                Route::get('/create',[AppointmantController::class,'create'])->name('create');
                 Route::post('/store',[AppointmantController::class,'store'])->name('store');
-                Route::post('/update/{id}',[AppointmantController::class,'update'])->name('update');
+                Route::get('/prescription',[AppointmantController::class,'prescription'])->name('prescription');
             });
             Route::group(['prefix' => 'medical-record','as' => 'medical-record.'],function(){
                 Route::any('/list',[MedicalController::class,'index'])->name('index');
