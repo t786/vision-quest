@@ -45,7 +45,7 @@
                 </div>
                 </div>
                 <div class="d-flex align-items-center">
-                    <a href="" class="btn-main me-3">
+                    <a href="{{ route('admin.patient.show', $patient->id) }}" class="btn-main me-3">
                         View Profile
                     </a>
                 <button class="btn-icon">

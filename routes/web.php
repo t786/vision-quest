@@ -37,11 +37,19 @@ Route::group(['middleware' => 'XSS'], function () {
                 Route::post('/update/profile',[DashboardController::class,'updateProfile'])->name('updateProfile');
             });
 
+            Route::group(['prefix' => 'patient','as' => 'patient.'],function(){
+                Route::get('/show/{id}',[DashboardController::class,'show'])->name('show');
+            });
+
             Route::group(['prefix' => 'appointment','as' => 'appointment.'],function(){
                 Route::any('/list',[AppointmantController::class,'index'])->name('index');
                 Route::get('/create',[AppointmantController::class,'create'])->name('create');
                 Route::post('/store',[AppointmantController::class,'store'])->name('store');
-                Route::get('/prescription',[AppointmantController::class,'prescription'])->name('prescription');
+                Route::get('/prescription/{id}',[AppointmantController::class,'prescription'])->name('prescription');
+                Route::get('/prescription/create/{id}',[AppointmantController::class,'prescriptionCreate'])->name('prescriptionCreate');
+                Route::post('/prescription/store',[AppointmantController::class,'prescriptionStore'])->name('prescriptionStore');
+                Route::get('/laptest/create/{id}',[AppointmantController::class,'lapTestCreate'])->name('lapTestCreate');
+                Route::post('/laptest/store',[AppointmantController::class,'lapTestStore'])->name('lapTestStore');
             });
             Route::group(['prefix' => 'medical-record','as' => 'medical-record.'],function(){
                 Route::any('/list',[MedicalController::class,'index'])->name('index');

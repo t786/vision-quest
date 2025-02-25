@@ -65,4 +65,11 @@ class DashboardController extends Controller
         // Redirect back with a success message
         return redirect()->back()->with('success', 'Profile updated successfully!');
     }
+
+    public function show($id)
+    {
+        $user = User::find($id);
+
+        return view('admin.dashboard.viewProfile', compact('user'));
+    }
 }

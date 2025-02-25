@@ -84,7 +84,7 @@
                                 <div class="chat-info">
                                     <!-- Patient's Full Name -->
                                     <h6 class="mb-0">
-                                        <a href="{{ route('admin.appointment.prescription') }}"
+                                        <a href="{{ route('admin.appointment.prescription', $upComingAppointment->id ) }}"
                                             class="text-primary">
                                             {{ $upComingAppointment->patient->first_name . ' ' . $upComingAppointment->patient->last_name }}
                                         </a>

@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\User;
 use App\Models\Appointment;
+use App\Models\Prescription;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Yajra\DataTables\DataTables;
 use App\Http\Controllers\Controller;
+use App\Models\LapTest;
 use Illuminate\Support\Facades\Validator;
 
 class AppointmantController extends Controller
@@ -128,8 +130,72 @@ class AppointmantController extends Controller
         return redirect()->route('admin.appointment.index')->with('success', 'Appointment completed successfully!');
     }
 
-    public function prescription(Request $request)
+    public function prescription($id)
     {
-        return view('admin.appointments.prescription');
+        $appointment = Appointment::find($id);
+
+        return view('admin.appointments.prescription', compact('appointment'));
+    }
+
+    public function prescriptionCreate($id)
+    {
+        $appointment = Appointment::find($id);
+        $pre = Prescription::where('appointment_id', $id)->first();
+
+        return view('admin.appointments.prescription-create', compact('appointment','pre'));
+    }
+
+    public function prescriptionStore(Request $request)
+    {
+        $appointment = Appointment::find($request->appointment_id);
+
+        $data = [
+            'prescription' => $request->prescription,
+            'patient_id' => $appointment->patient_id,
+            'appointment_id' => $appointment->id
+        ];
+
+        $pre = Prescription::where('appointment_id', $request->appointment_id)
+            ->where('patient_id', $appointment->patient_id)
+            ->first();
+
+        if($pre){
+            $pre->update($data);
+        } else {
+            Prescription::create($data);
+        }
+
+        return redirect()->route('admin.appointment.index')->with('success', 'Appointment completed successfully!');
+    }
+
+    public function lapTestCreate($id)
+    {
+        $appointment = Appointment::find($id);
+        $pre = LapTest::where('appointment_id', $id)->first();
+
+        return view('admin.appointments.lap-test', compact('appointment','pre'));
+    }
+
+    public function lapTestStore(Request $request)
+    {
+        $appointment = Appointment::find($request->appointment_id);
+
+        $data = [
+            'lap_test' => $request->lap_test,
+            'patient_id' => $appointment->patient_id,
+            'appointment_id' => $appointment->id
+        ];
+
+        $pre = LapTest::where('appointment_id', $request->appointment_id)
+            ->where('patient_id', $appointment->patient_id)
+            ->first();
+
+        if($pre){
+            $pre->update($data);
+        } else {
+            LapTest::create($data);
+        }
+
+        return redirect()->route('admin.appointment.index')->with('success', 'Appointment completed successfully!');
     }
 }
