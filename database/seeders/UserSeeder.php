@@ -25,6 +25,9 @@ class UserSeeder extends Seeder
                     'phone_number' => "03000000000",
                     'user_type' => 1, // Patient
                     'password' => Hash::make('12345678'),
+                    'address' => 'Address 123 etc',
+                    'cnic' => '35202-1234567-8',
+                    'date_of_birth' => '1996-12-08'
                 ],
                 [
                     'id' => 2,
@@ -34,6 +37,9 @@ class UserSeeder extends Seeder
                     'phone_number' => "03000000000",
                     'user_type' => 1, // Patient
                     'password' => Hash::make('12345678'),
+                    'address' => 'Address 123 etc',
+                    'cnic' => '35202-1234567-8',
+                    'date_of_birth' => '1996-12-08'
                 ],
                 [
                     'id' => 3,
@@ -43,6 +49,9 @@ class UserSeeder extends Seeder
                     'phone_number' => "03000000000",
                     'user_type' => 1, // Patient
                     'password' => Hash::make('12345678'),
+                    'address' => 'Address 123 etc',
+                    'cnic' => '35202-1234567-8',
+                    'date_of_birth' => '1996-12-08'
                 ],
                 [
                     'id' => 4,
@@ -52,6 +61,9 @@ class UserSeeder extends Seeder
                     'phone_number' => "03000000000",
                     'user_type' => 1, // Patient
                     'password' => Hash::make('12345678'),
+                    'address' => 'Address 123 etc',
+                    'cnic' => '35202-1234567-8',
+                    'date_of_birth' => '1996-12-08',
                 ],
                 [
                     'id' => 5,
@@ -61,6 +73,9 @@ class UserSeeder extends Seeder
                     'phone_number' => "03000000000",
                     'user_type' => 2, // Doctor
                     'password' => Hash::make('12345678'),
+                    'address' => null,
+                    'cnic' => null,
+                    'date_of_birth' => null,
                 ],
                 [
                     'id' => 6,
@@ -70,6 +85,9 @@ class UserSeeder extends Seeder
                     'phone_number' => "03000000000",
                     'user_type' => 2, // Doctor
                     'password' => Hash::make('12345678'),
+                    'address' => null,
+                    'cnic' => null,
+                    'date_of_birth' => null,
                 ],
                 [
                     'id' => 7,
@@ -79,6 +97,9 @@ class UserSeeder extends Seeder
                     'phone_number' => "03000000000",
                     'user_type' => 2, // Doctor
                     'password' => Hash::make('12345678'),
+                    'address' => null,
+                    'cnic' => null,
+                    'date_of_birth' => null,
                 ],
                 [
                     'id' => 8,
@@ -88,33 +109,13 @@ class UserSeeder extends Seeder
                     'phone_number' => "03000000000",
                     'user_type' => 2, // Doctor
                     'password' => Hash::make('12345678'),
+                    'address' => null,
+                    'cnic' => null,
+                    'date_of_birth' => null,
                 ],
             ),
-            ['email'],['id','first_name','last_name','email','phone_number','password','user_type']
+            ['email'],
+            ['id','first_name','last_name','email','phone_number','password','user_type','address','cnic','date_of_birth']
         );
-
-        $user = User::findOrFail(1);
-        $user->assignRole(1);
-
-        $user = User::findOrFail(2);
-        $user->assignRole(1);
-
-        $user = User::findOrFail(3);
-        $user->assignRole(1);
-
-        $user = User::findOrFail(4);
-        $user->assignRole(1);
-
-        $user = User::findOrFail(5);
-        $user->assignRole(2);
-
-        $user = User::findOrFail(6);
-        $user->assignRole(2);
-
-        $user = User::findOrFail(7);
-        $user->assignRole(2);
-
-        $user = User::findOrFail(8);
-        $user->assignRole(2);
     }
 }

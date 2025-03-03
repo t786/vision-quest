@@ -25,7 +25,7 @@ class AppointmentSeeder extends Seeder
                     'mobile' => '03000000000',
                     'gender' => 'Male',
                     'address' => 'Address',
-                    'date' => '2025-02-25',
+                    'date' => '2025-03-04',
                     'from' => '10:00',
                     'to' => '11:00',
                     'treatment' => 'Treatment'
@@ -40,7 +40,7 @@ class AppointmentSeeder extends Seeder
                     'mobile' => '03000000000',
                     'gender' => 'Male',
                     'address' => 'Address',
-                    'date' => '2025-02-25',
+                    'date' => '2025-03-04',
                     'from' => '10:00',
                     'to' => '11:00',
                     'treatment' => 'Treatment'
@@ -55,7 +55,7 @@ class AppointmentSeeder extends Seeder
                     'mobile' => '03000000000',
                     'gender' => 'Male',
                     'address' => 'Address',
-                    'date' => '2025-02-25',
+                    'date' => '2025-03-04',
                     'from' => '10:00',
                     'to' => '11:00',
                     'treatment' => 'Treatment'
@@ -70,7 +70,7 @@ class AppointmentSeeder extends Seeder
                     'mobile' => '03000000000',
                     'gender' => 'Male',
                     'address' => 'Address',
-                    'date' => '2025-01-25',
+                    'date' => '2025-02-25',
                     'from' => '10:00',
                     'to' => '11:00',
                     'treatment' => 'Treatment'
@@ -85,7 +85,7 @@ class AppointmentSeeder extends Seeder
                     'mobile' => '03000000000',
                     'gender' => 'Male',
                     'address' => 'Address',
-                    'date' => '2025-01-25',
+                    'date' => '2025-02-25',
                     'from' => '10:00',
                     'to' => '11:00',
                     'treatment' => 'Treatment'
@@ -100,7 +100,7 @@ class AppointmentSeeder extends Seeder
                     'mobile' => '03000000000',
                     'gender' => 'Male',
                     'address' => 'Address',
-                    'date' => '2025-01-25',
+                    'date' => '2025-02-25',
                     'from' => '10:00',
                     'to' => '11:00',
                     'treatment' => 'Treatment'

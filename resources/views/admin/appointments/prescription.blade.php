@@ -72,7 +72,7 @@
                         </div>
                         <div class="diagnosis">
                             <label for="diagnosedWith" class="form-label">Diagnosed With:</label>
-                            <input type="text" class="form-control" id="diagnosedWith" placeholder="Type">
+                            <input type="text" class="form-control" id="diagnosedWith" placeholder="Type" value="{{ $appointment->treatment }}">
                         </div>
                     </div>
 

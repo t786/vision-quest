@@ -20,4 +20,14 @@ class Appointment extends Model
     {
         return $this->belongsTo(User::class, 'doctor_id','id');
     }
+
+    public function prescription()
+    {
+        return $this->hasOne(Prescription::class);
+    }
+
+    public function labTests()
+    {
+        return $this->hasMany(LapTest::class);
+    }
 }

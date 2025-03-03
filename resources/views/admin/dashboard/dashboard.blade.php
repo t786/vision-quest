@@ -38,7 +38,8 @@
         @foreach ($patients as $patient)
             <div class="patient-card d-flex align-items-center justify-content-between" style="margin-bottom: 10px;">
                 <div class="d-flex align-items-center">
-                <img src="{{ asset('assets/img/avatars/1.png') }}" alt="Patient Avatar" class="patient-avatar me-3">
+                    <img src="{{ $patient->image_url ? asset('storage/' . $patient->image_url) : asset('assets/img/avatars/14.png') }}"
+                    alt="Dr. Ali Anjum" class="doctor-image">
                 <div>
                     <h6 class="mb-0">{{ $patient->first_name .' '. $patient->last_name }}</h6>
                     <small class="text-muted">{{ $patient->age ?? 'N/A' }} years</small>

@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use App\Models\Appointment;
+use App\Models\Prescription;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 
 class MedicalController extends Controller
 {
@@ -12,7 +16,10 @@ class MedicalController extends Controller
      */
     public function index()
     {
-        //
+        $prescriptions = Prescription::orderBy('id', 'desc')
+            ->get();
+
+        return view('admin.medical-record.index', compact('prescriptions'));
     }
 
     /**
@@ -61,5 +68,27 @@ class MedicalController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function download($appointment_id)
+    {
+        // Fetch appointment details with related data
+        $appointment = Appointment::with(['patient', 'prescription', 'labTests'])
+            ->where('id', $appointment_id)
+            ->first();
+
+        if (!$appointment) {
+            return abort(404, 'Appointment not found');
+        }
+
+        // Load the PDF view and pass data
+        $pdf = Pdf::loadView('pdf.appointment', compact('appointment'));
+
+        // Optionally, save the PDF in storage (optional)
+        $pdfPath = "public/pdfs/appointment_{$appointment->id}.pdf";
+        Storage::put($pdfPath, $pdf->output());
+
+        // Download the PDF
+        return $pdf->download("appointment_{$appointment->id}.pdf");
     }
 }

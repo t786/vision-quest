@@ -53,8 +53,7 @@ Route::group(['middleware' => 'XSS'], function () {
             });
             Route::group(['prefix' => 'medical-record','as' => 'medical-record.'],function(){
                 Route::any('/list',[MedicalController::class,'index'])->name('index');
-                 Route::post('/store',[MedicalController::class,'store'])->name('store');
-                Route::post('/update/{id}',[MedicalController::class,'update'])->name('update');
+                Route::get('/download-pdf/{appointment_id}', [MedicalController::class, 'download'])->name('download.pdf');
             });
         });
     });
